@@ -76,15 +76,18 @@
     const minuteHand = document.querySelector('.min-hand');
     const hourHand = document.querySelector('.hour-hand');
 
-    const hands = document.querySelectorAll('.hand');
-    console.log(hands);
-
+    let increment = 0;
     function setDate() {
       // console.log('Hi');
       const now = new Date();
       const seconds = now.getSeconds();
       // console.log(seconds);
-      const secondsDegrees = ((seconds / 60) * 360) + 90;
+      
+      if (seconds === 0) {
+        increment =+ 360;
+      }
+      
+      const secondsDegrees = ((seconds / 60) * 360) + 90 + increment;
       secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
 
       const minutes = now.getMinutes();
@@ -94,12 +97,6 @@
       const hours = now.getHours();
       const hoursDegrees = ((hours / 12) * 360) + 90;
       hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
-
-
-      // if (seconds === 59 || seconds === 14 || seconds === 29 || seconds === 44) {
-      //   console.log('time');
-      //   // hands.style.transition = 'none';
-      // }
     };
 
     setInterval(setDate, 1000);
