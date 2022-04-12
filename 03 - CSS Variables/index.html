@@ -21,6 +21,23 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /* declaring variable on an element and set default variable */
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    /* use var() to use the named variable */
+    img {
+      padding: var(--spacing);
+      background-color: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .h1 {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,7 +62,28 @@
   </style>
 
   <script>
-  </script>
+    // select all 3 imputs on the page
+    const inputs = document.querySelectorAll('.controls input');
+
+    function handleUpdate() {
+      // console.log(this.value)
+
+      // dataset will take all tha "data-" and put it into a object
+      // console.log(this.dataset);
+      // 'sizing' was defined in the html for spacing and blur but we need to add '' for the color for nothing or ulse we will be appending undefine later
+      const suffix = this.dataset.sizing || '';
+      // console.log(suffix);
+
+      // select and update the variable
+      // console.log(this.name);
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+    }
+
+    // change is only for faster this user finished changing
+    inputs.forEach( input => input.addEventListener('change', handleUpdate));
+    // if you want to track while the user changes ie the slide use mousemove
+    inputs.forEach( input => input.addEventListener('mousemove', handleUpdate));
+    </script>
 
 </body>
 </html>
