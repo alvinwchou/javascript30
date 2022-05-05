@@ -17,6 +17,59 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+const cities = []
+
+fetch(endpoint)
+  .then(res => res.json())
+  .then(data => cities.push(...data))
+
+// this function matches the input and returns an array
+function findMatches(wordToMatch, cities) {
+  return cities.filter(place => {
+    // here we need to figure out if the city or state matches what was searched
+    const regex = new RegExp(wordToMatch, 'gi')
+    return place.city.match(regex) || place.state.match(regex)
+  })
+}
+
+
+function displayMatches() {
+  console.log(this.value);
+  const matchArray = findMatches(this.value, cities)
+  console.log(matchArray);
+  const html = matchArray.map(place => {
+    // this highlights the searched term
+      // find what ever it matches in the regex
+    const regex = new RegExp(this.value, 'gi')
+      // replace it with this, then chagne place.city with cityName
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`)
+      // also have to do it with state names 
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`)
+
+    return `
+      <li>
+        <span class="name">${cityName}, ${stateName}</span>
+        <span class="populatoin">${numberWithCommas(place.population)}</span>
+      </li>
+    `
+  }).join('') // this map returns an array but we want it as a string so we use .join
+  suggestions.innerHTML = html;
+}
+
+// number with commas - you can find this online
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+const searchInput = document.querySelector('.search')
+const suggestions = document.querySelector('.suggestions')
+
+// only works when user clicks outside beucase change only works when its off the input
+searchInput.addEventListener('change', displayMatches)
+// to solve this we need to do the same but with keyup
+searchInput.addEventListener('keyup', displayMatches)
+
+
 </script>
 </body>
 </html>
