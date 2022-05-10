@@ -7,6 +7,68 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector('#draw');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  ctx.strokeStyle = '#BADA55';
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 100;
+
+  //different modes you can play around with
+  // ctx.globalCompositeOperation = 'multiply'
+
+  //draw when user clicks, stop drawing when user unclicks
+  let isDrawing = false;
+  //this is where the line start
+  let lastX = 0;
+  let lastY = 0;
+
+  let hue = 0;
+  let direction = true
+  
+  function draw(e) {
+    if (!isDrawing) return; // stop the functiom fro running when tey are not moused down
+    console.log(e)
+    ctx.strokeStyle = `hsl(${hue},100%, 50%)`;
+
+    ctx.beginPath();
+    //start from
+    ctx.moveTo(lastX, lastY);
+    //go to
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+
+    // when we are done the draw function we want to update lastX and lastY
+    // lastX = e.offsetX;
+    // lastY = e.offsetY;
+    // we can write the above in one single line
+    [lastX, lastY] = [e.offsetX, e.offsetY]
+    hue++;
+    if (hue >= 360) {
+      hue = 0;
+    }
+
+    // if greater then 100 flip the directoin, viceversa
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+      direction = !direction;
+    }
+    direction ? ctx.lineWidth++ : ctx.lineWidth--
+  }
+
+  canvas.addEventListener('mousemove', draw)
+  // when user clicks, isDraawing is true
+  canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY]
+  });
+  // when user stops clicking isDrawing is false;
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  //when mouse is moves out side of the canvas isDrawing is false
+  canvas.addEventListener('mouseout', () => isDrawing = false);
+  
 </script>
 
 <style>
