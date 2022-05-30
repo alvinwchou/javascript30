@@ -58,6 +58,41 @@
       };
     }
 
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      console.count(e);
+      console.log(window.scrollY); // how many pixel you are scroll down from top of brower
+      // once the image is peaking 50% then we want to animate
+      sliderImages.forEach(sliderImage => {
+        // half way through the image
+          // window.scrollY + window.innerHeight = pixel at the bottom on brower
+          // sliderImage.height will give us the pixel at the bottom of the image and we just divide by 2 to get it half way
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2 
+        console.log(slideInAt);
+
+        // bottom of the image
+          // offsetTop means how far is the top of the image from the top of the very top of the page
+        const imageBottom = sliderImage.offsetTop + sliderImage.height
+
+        // is the image half shown
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        // image scrolled passed
+        const isNotScrolledPast = window.scrollY < imageBottom
+
+        // if it half shown on the page and not scrolled past it
+        if (isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active')
+        } else {
+          sliderImage.classList.remove('active')
+        }
+      })
+    }
+
+    // we wrap the ckeckSlide function within the deboucne function so checkSlide doest not fire off 50 times in a second.
+    window.addEventListener('scroll', debounce(checkSlide))
+
   </script>
 
   <style>
