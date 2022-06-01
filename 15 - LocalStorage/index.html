@@ -28,8 +28,70 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  // becuase we are using localStorage we need to translate that string back in to an array but only if we have localStorage already saved, if not then just define items as an array
+  const items = JSON.parse(localStorage.getItem('items')) || [];
 
+  function addItem(e) {
+    e.preventDefault();
+    console.log('hello');
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      text, // ES6 - this is the same as text: text
+      done: false
+    }
+    console.log(item);
+
+    items.push(item)
+    populateList(items, itemsList);
+
+    // localStorage only accepts strings. we need to make the oject into a string by(JSON.stringify)
+    localStorage.setItem('items', JSON.stringify(items))
+
+    // clear the form element with the reset method
+    this.reset();
+  }
+
+  // populate the html, need the list array - we will make plates by default and array just incase we forget to pass in something it wont break our code, we also need a place to place the array (platesList - destination html element)
+  function populateList(plates = [], platesList) {
+    platesList.innerHTML = plates.map((plate, index) => {
+      // ternury is to check if check is true or false in the item array
+      return `
+        <li>
+          <input type="checkbox" data-index=${index} id="item${index}" ${plate.done ? 'checked' : ''}/>
+          <label for="item${index}">${plate.text}</label>
+        </li>
+      `;
+    }).join('') // maps will return an array but .innerHTML takes in a string
+  }
+
+
+  // persists the checked state
+  function toggleDone(e) {
+    if(!e.target.matches('input')) return; // skip this uless it's an input
+    console.log(e.target);
+    const el = e.target;
+    console.log(el.dataset.index);
+    const index = el.dataset.index;
+    items[index].done = !items[index].done;
+
+    // we have to update the localstorage
+    localStorage.setItem('items', JSON.stringify(items))
+    // repopulate the list
+    populateList(items, itemsList);
+  }
+
+
+  addItems.addEventListener('submit', addItem)
+
+
+  // we have to look for somebody that is already on the page on page load and listen to them. The ul is already on the page, so we put the listener on it for the children
+  itemsList.addEventListener('click', toggleDone)
+
+  populateList(items, itemsList);
+
+
+
+//bonus add a button to 1) check all, 2) uncheck all, 3) clear list
 </script>
 
 
