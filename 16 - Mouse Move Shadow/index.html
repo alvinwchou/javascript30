@@ -35,6 +35,44 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+
+  const walk = 100; // 100px
+  
+  function shadow(e) {
+    console.log(e);
+ 
+    // const width = hero.offsetWidth;
+    // const height = hero.offsetHeight;
+    // below is the same as above - destructuring 
+    const { offsetWidth: width, offsetHeight: height } = hero;
+
+    // we want the value of where our mouse is at
+    let { offsetX: x, offsetY: y } = e;
+    console.log(x, y);
+
+    if (this !== e.target) {
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    const xWalk = Math.round((x / width * walk )) - (walk / 2)
+    // if our walk is 100 the most we can go is 50 and the lowest we can go is -50
+    const yWalk = Math.round((y / height * walk )) - (walk / 2)
+    
+    console.log(xWalk, yWalk);
+
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(255, 0, 255, 0.7),
+      ${xWalk * -1}px ${yWalk}px 0 rgba(0, 255, 255, 0.7),
+      ${yWalk}px ${xWalk * -1}px 0 rgba(0, 0, 255, 0.7),
+      ${yWalk * -1}px ${xWalk}px 0 rgba(255, 0, 0, 0.7)
+    `;
+  }
+  
+  // going to listen for a mouse move event on hero
+  hero.addEventListener('mousemove', shadow)
 </script>
 </body>
 </html>
