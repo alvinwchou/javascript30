@@ -10,8 +10,45 @@
   </div>
 
 <script>
+  // currently only available in firefox so we set it as window.Speach Recognition even though chrome is webkit
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  const recognition = new SpeechRecognition();
+  
+  recognition.interimResults = true; // as you speak it auto populates if not you have to stop speaking before it gives you anything
+
+  // create a paragraph and append it to the div
+  let p = document.createElement('p');
+  const words = document.querySelector('.words')
+  words.appendChild(p)
+
+  recognition.addEventListener('result', e => {
+    console.log(e.results)
+    // convert results into an array
+    const transcript = Array.from(e.results)
+    // map over them and turn one thing to another
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join('')
+
+    console.log(transcript)
+    
+    // we can see it in the DOM
+    p.innerText = transcript;
+    // but when we stop talking and continue it replaces so we have to check if the result is final replace to p with this new p
+    if(e.results[0].isFinal) {
+      p = document.createElement('p');
+      words.appendChild(p);
+    }
+    if(transcript.includes('get the weather')) {
+      console.log('put a function here to get grab the weather');
+    }
+  })
+
+  // result only runs once so we have to listen for when it end and run recognition again
+  recognition.addEventListener('end', recognition.start)
+
+  recognition.start()
 
 </script>
 
