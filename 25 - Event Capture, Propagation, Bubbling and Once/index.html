@@ -42,7 +42,21 @@
 
 <button></button>
 <script>
+  const divs = document.querySelectorAll('div');
 
+  function logText(e) {
+    console.log(this.classList.value)
+    e.stopPropagation();
+  }
+
+  // capture: true will display on the way down
+  // once will only list once and then unbind it 
+  divs.forEach(div => div.addEventListener('click', logText, {capture: false}, {once: true}))
+
+  const button = document.querySelector('button')
+  button.addEventListener('click', () => {
+    console.log('CLICK'), {once: true}
+  })
 </script>
 </body>
 </html>
