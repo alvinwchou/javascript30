@@ -220,6 +220,60 @@
 </style>
 
 <script>
+  // the 3 li
+  const triggers = document.querySelectorAll('.cool > li')
+  // dropdown background
+  const background = document.querySelector('.dropdownBackground')
+  const nav = document.querySelector('.top')
+
+  function handleEnter() {
+    console.log('Enter')
+    // Part 1 - find whatever is in the li and display it by adding and removing classes
+    // set display to block
+    this.classList.add('trigger-enter')
+    // after 150 set opacity to 1 for a smooth transition
+    setTimeout(() => {
+      // we add this if just incase user enters and leaves li too fast and adds the class when no longer hovered in li
+      if (this.classList.contains('trigger-enter')) {
+        this.classList.add('trigger-enter-active')
+      }
+    }, 150)
+    // Part 2 - finding the width of the dropdown and add the white div behind it
+    background.classList.add('open')
+    
+    // need to figure out how high, how wide, and where does the li live
+    const dropdown = this.querySelector('.dropdown')
+    console.log(dropdown);
+    const dropdownCoords = dropdown.getBoundingClientRect()
+    console.log(dropdownCoords);
+
+    // find out where the nav liv
+    const navCoords = nav.getBoundingClientRect()
+
+    // put the two coords together
+    const coords = {
+      height: dropdownCoords.height,
+      width: dropdownCoords.width,
+      top: dropdownCoords.top - navCoords.top,
+      left: dropdownCoords.left - navCoords.left
+    }
+
+    background.style.setProperty('width', `${coords.width}px`)
+    background.style.setProperty('height', `${coords.height}px`)
+    background.style.setProperty('transform',`translate(${coords.left}px, ${coords.top}px)`)
+  }
+  
+  function handleLeave() {
+    console.log('Leave');
+    this.classList.remove('trigger-enter', 'trigger-enter-active')
+    background.classList.remove('open')
+  }
+  
+  // listen for a hover in and hover out and trigger the funcitons
+  triggers.forEach(trigger => trigger.addEventListener('mouseenter', handleEnter)) 
+  triggers.forEach(trigger => trigger.addEventListener('mouseleave', handleLeave)) 
+
+
 </script>
 
 </body>
