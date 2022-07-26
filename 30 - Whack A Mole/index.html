@@ -36,7 +36,64 @@
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
   const moles = document.querySelectorAll('.mole');
+  let lastHole;
+  let timeUp = false;
+  let score = 0;
 
+  // function to generate a min and max amount of time
+  function randomTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  // function to pick a random hole for the mole to pop up
+  function randomHole(holes) {
+    console.log(holes); // node list of holes
+    const idx = Math.floor(Math.random() * holes.length);
+    const hole = holes[idx];
+    if (hole === lastHole) {
+      console.log('Ah nah thats the same one bud');
+      return randomHole(holes)
+    }
+    console.log(hole);
+
+    lastHole = hole;
+    return hole;
+  }
+
+  // function to get the moles to pop up
+  function peep() {
+    const time = randomTime(200, 1000);
+    const hole = randomHole(holes);
+    console.log({time, hole});
+
+    hole.classList.add('up');
+
+    // after the random amount of time we wil remove the class
+    setTimeout(() => {
+      hole.classList.remove('up')
+      if (!timeUp) peep()
+    }, time)
+  }
+
+  // function to start game
+  function startGame() {
+    scoreBoard.textContent = 0;
+    timeUp = false;
+    score = 0;
+    peep();
+    setTimeout(() => timeUp = true, 10000)
+  }
+
+  // function when click on a mole
+  function bonk(e) {
+    console.log(e);
+    if (!e.isTrusted) return // no fake clicks
+    score++;
+    this.classList.remove('up');
+    scoreBoard.textContent = score;
+  }
+
+  moles.forEach(mole => mole.addEventListener('click', bonk))
 </script>
 </body>
 </html>
